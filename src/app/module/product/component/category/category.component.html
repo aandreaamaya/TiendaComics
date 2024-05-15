@@ -1,0 +1,126 @@
+<div class="card border-light mb-3">
+
+    <!-- Card header -->
+
+    <div class="card-header">
+      <div class="row">
+          <div class="col">
+            <h4>Listado de categorias</h4>
+          </div>
+          <div class="col">
+            <button type="button" class="btn btn-primary" style="float: right;" (click)="showModalForm()">
+              <i class="ph ph-plus-circle"></i>
+              Agregar categoría
+            </button>
+          </div>
+      </div>
+    </div>
+
+    <!-- Card body -->
+
+    <div class="card-body">
+
+        <!-- Category table  -->
+
+        <table class="table">
+            <thead class="thead-dark">
+              <tr class="table-primary">
+                  <th>Id</th>
+                  <th>Acrónimo</th>
+                  <th>Categoría</th>
+                  <th>Estatus</th>
+                  <th>Más</th>
+              </tr>
+            </thead>
+            <tbody>
+                @for(category of categories; track category; let i = $index ) {
+                    <tr>
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ category.acronym }}</td>
+                        <td>{{ category.category }}</td>
+                        <td>
+                          <div class="td-status" [ngClass]="{'td-status-enable': category.status == 1, 'td-status-disable': category.status == 0}" >
+                            {{ category.status == 0 ? "Inactivo" : "Activo" }}
+                            </div>
+                        </td>
+
+                        <td>
+                          <div class="dropdown">
+                            <!-- dots button  -->
+                            <button class="dropdown-button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                              <i class="ph ph-dots-three-outline-vertical icon-menu"></i>
+                            </button>
+        
+        
+                            <!-- menu options -->
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                              <a class="dropdown-item" (click)="updateCategory(category)">
+                                <i class="ph ph-note-pencil icon-text-ul"></i>Editar
+                              </a>
+                              <a *ngIf="category.status == 0" class="dropdown-item enable-item" (click)="enableCategory(category.category_id)">
+                                <i class="ph ph-check-circle icon-text-ul"></i>Activar
+                              </a>
+                              <a *ngIf="category.status == 1" class="dropdown-item disable-item" (click)="disableCategory(category.category_id)">
+                                <i class="ph ph-x-circle icon-text-ul"></i>Desactivar
+                              </a>
+                            </div>
+                          </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal form  -->
+
+<div class="modal fade" tabindex="-1" data-bs-backdrop="static" id="modalForm">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Categoría</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+            <!-- Category form  -->
+            
+            <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+                <!-- Acronym  -->
+
+                <div class="mb-3">
+                  <label for="acronym" class="form-label">Acrónimo</label>
+                  <input type="text" class="form-control" formControlName="acronym" placeholder="Acrónimo de la categoría"
+                    [ngClass]="{'is-invalid': form.controls['acronym'].errors && submitted}" >
+
+                  @if (form.controls['acronym'].errors && submitted) {
+                    <small class="input-error-message">Favor de ingresar un acrónimo de categoría válido</small>
+                  }
+                </div>
+
+                <!-- Category  -->
+
+                <div class="mb-3">
+                  <label for="category" class="form-label">Categoría</label>
+                  <input type="text" class="form-control" formControlName="category" placeholder="Nombre de la categoría"
+                    [ngClass]="{'is-invalid': form.controls['category'].errors && submitted}" >
+
+                  @if (form.controls['category'].errors && submitted) {
+                    <small class="input-error-message">Favor de ingresar un nombre de categoría válido</small>
+                  }
+               
+                </div>
+
+                <!-- Button  -->
+
+                <div class="form-button">
+                    <button type="submit" class="btn btn-primary btn-new">Guardar</button>
+                </div>
+              
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>

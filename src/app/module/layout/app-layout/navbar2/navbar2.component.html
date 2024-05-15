@@ -1,0 +1,140 @@
+<nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+    <div class="container-fluid navbar-content">
+
+    <!-- logo  -->
+
+      <a class="navbar-brand" href="/">
+        <img src="assets/images/Ray-Ban_blue.png" alt="..." class="nav-logo">
+      </a>
+
+    <!-- responsive button  -->
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+    <!-- menu options -->
+      
+      <div class="collapse navbar-collapse" id="navbarColor01">
+        <ul class="navbar-nav me-auto">
+          
+        <!-- categories -->
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Categorías</a>
+            <div class="dropdown-menu nav-dropdown-menu">
+              @for(category of categories; track category) {
+                <a class="dropdown-item nav-dropdown-item" routerLink="#">{{ category.category }}</a>
+              }
+            </div>
+          </li>
+
+        <!-- admin -->
+
+          @if (isAdmin) {
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Administración</a>
+              <div class="dropdown-menu nav-dropdown-menu">
+                <a class="dropdown-item nav-dropdown-item" routerLink="/categoria">Categorías</a>
+                <a class="dropdown-item nav-dropdown-item" routerLink="/cliente">Clientes</a>
+                <a class="dropdown-item nav-dropdown-item" routerLink="/factura">Facturas</a>
+                <a class="dropdown-item nav-dropdown-item" routerLink="/producto">Productos</a>
+                <a class="dropdown-item nav-dropdown-item" routerLink="/region">Regiones</a>
+              </div>
+            </li>
+          }
+
+        </ul>
+
+        <!-- search bar  -->
+
+        <form class="d-flex">
+          <input class="form-control me-sm-2" type="search" placeholder="Search">
+          <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+        </form>
+
+        <!-- shopping cart  -->
+
+        @if (loggedIn) {
+          <a class="nav-link" routerLink="#" role="button">
+            <i class="ph ph-shopping-cart i-cart"></i>
+          </a>
+        }@else {
+          <ul class="navbar-nav">
+            <a class="nav-link nav-register" (click)="showRegisterModal()">Registrarse</a>
+          </ul>
+        }
+
+    
+
+        <!-- user information  -->
+       
+        <ul class="navbar-nav">
+
+            @if(loggedIn){
+              <li class="nav-item dropdown user-information">
+  
+                <!-- user logo  -->
+   
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                  <img class="img-profile rounded-circle nav-user-img" src="assets/images/user-logo.png">
+                </a>
+   
+                <!-- user options -->
+   
+                <div class="dropdown-menu nav-dropdown-menu nav-dropdown-menu-user">
+                    <a class="dropdown-item nav-dropdown-item" routerLink="#">Perfil</a>
+                    <a class="dropdown-item nav-dropdown-item" routerLink="#">Configuración</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item nav-dropdown-item" (click)="logout()">Cerrar sesión</a>
+                </div>
+              </li>
+            }@else {
+              <a class="nav-link" (click)="showLoginModal()">Iniciar sesión</a>
+            }
+  
+  
+          </ul>
+      </div>
+    </div>
+  </nav>
+
+<!-- Login modal  -->
+
+<div class="modal fade" tabindex="-1" data-bs-backdrop="static" id="loginModal">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Iniciar sesión</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+          <!-- Login component  -->
+          
+          <app-login></app-login>
+          
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Register modal  -->
+
+<div class="modal fade" tabindex="-1" data-bs-backdrop="static" id="registerModal">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Nuevo usuario</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+          <!-- Register component  -->
+          
+          <app-register></app-register>
+          
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,32 @@
+.product-label{
+    font-weight: 600;
+}
+
+.btn-product-detail{
+    width: 180px;
+    float: right;
+    margin-bottom: 18px;
+}
+
+.btn-product-images{
+    width: 180px;
+    float: left;
+    margin-bottom: 18px;
+}
+
+.card-image{
+    margin-bottom: 24px;
+}
+
+.card-body-images{
+    padding: 12px;
+}
+
+.new-image{
+    margin-top: -12px;
+    margin-bottom: 12px;
+}
+
+.btn-new-image{
+    float: right;
+}

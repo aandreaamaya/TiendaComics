@@ -1,0 +1,57 @@
+.navbar{
+    padding: 8px;
+}
+
+.navbar-content{
+    max-width: 1280px;
+    margin: auto;
+  }
+
+.nav-logo{
+    width: 80px;
+    height: 40px;
+
+    margin-right: 20px;
+    margin-left: 8px;
+}
+
+.nav-dropdown-menu{
+    background-color: #2c3e50;
+    border-radius: 0px;
+    margin-top: 13px;
+    border: none;
+}
+
+.nav-dropdown-item{
+    color: white !important;
+}
+
+.nav-dropdown-item:hover{
+    background-color: white;
+    color: black !important;
+}
+
+.nav-dropdown-menu-user{
+    margin-top: 9px;
+    left: -150%;
+}
+
+.nav-user-img{
+    width: 32px;
+}
+
+.i-cart{
+    color: white;
+    font-size: 28px;
+    vertical-align: middle;
+    margin-right: 8px;
+    margin-left: 24px;
+}
+
+.nav-link{ 
+    cursor: pointer;
+}
+
+.nav-register{
+    margin-left: 12px;
+}
