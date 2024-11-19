@@ -1,0 +1,46 @@
+@model ProyectoFinal.ViewModels.RegistroUsuarioViewModel
+
+<h2>Registro</h2>
+
+<form asp-action="Register" asp-controller="Usuarios" method="post">
+    <div class="form-group">
+        <label asp-for="Nombre">Nombre</label>
+        <input asp-for="Nombre" class="form-control" />
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Username">Nombre de Usuario</label>
+        <input asp-for="Username" class="form-control" />
+        <span asp-validation-for="Username" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Email">Correo Electrónico</label>
+        <input asp-for="Email" type="email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Password">Contraseña</label>
+        <input asp-for="Password" type="password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ConfirmPassword">Confirmar Contraseña</label>
+        <input asp-for="ConfirmPassword" type="password" class="form-control" />
+        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="RolSeleccionado">Rol</label>
+        <select asp-for="RolSeleccionado" class="form-control">
+            <option value="Comprador">Comprador</option>
+            <option value="Vendedor">Vendedor</option>
+        </select>
+        <span asp-validation-for="RolSeleccionado" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Registrar</button>
+</form>
