@@ -228,11 +228,15 @@ namespace ProyectoFinal.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UsuarioVendedorId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("VendedorId")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("Vendido")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -247,14 +251,16 @@ namespace ProyectoFinal.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Emisor")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Emisor")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("FechaEmision")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Remitente")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Remitente")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("Visto")
                         .HasColumnType("INTEGER");
@@ -321,8 +327,9 @@ namespace ProyectoFinal.Migrations
                     b.Property<decimal>("OfertaMaxima")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Vendedor")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Vendedor")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -384,7 +391,9 @@ namespace ProyectoFinal.Migrations
                 {
                     b.HasOne("ProyectoFinal.Models.ApplicationUser", "UsuarioVendedor")
                         .WithMany()
-                        .HasForeignKey("UsuarioVendedorId");
+                        .HasForeignKey("UsuarioVendedorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("UsuarioVendedor");
                 });

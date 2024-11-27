@@ -35,7 +35,8 @@ namespace ProyectoFinal.Controllers
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 var user = await _userManager.FindByIdAsync(userId);
                 var roles = await _userManager.GetRolesAsync(user);
-
+                var mensajes = await _context.Mensajes.Where(n => n.Remitente == userId).ToListAsync();
+                var notificiaciones = await _context.Mensajes.Where(n => n.Remitente == userId).ToListAsync();
 
                 if (roles.Contains("Cliente"))
                 {
@@ -64,12 +65,8 @@ namespace ProyectoFinal.Controllers
                             Vendedor = user
                         }).ToListAsync();
 
-                    var viewModel = new 
-                    {
-                        Comics = comics,
-                        Subastas = subastas
-                    };
-                    return View(viewModel);
+                    
+                    return View(new{Comics = comics,Subastas = subastas});
                 }
                 else if (roles.Contains("Vendedor"))
                 {
