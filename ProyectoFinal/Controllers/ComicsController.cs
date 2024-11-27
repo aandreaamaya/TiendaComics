@@ -102,10 +102,9 @@ namespace ProyectoFinal.Controllers
             
                 if (roles.Contains("Vendedor"))
                 {
-                    // Los vendedores solo pueden ver los comics que han subido
+                    
                     return View();
                 }
-                // esto es facil de escalar para un admin pues solo hay que agregar su apartado
 
                 else
                 {
