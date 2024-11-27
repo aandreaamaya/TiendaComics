@@ -11,5 +11,6 @@ namespace ProyectoFinal.Models
         public DbSet<Oferta> Ofertas { get; set; }
         public DbSet<Mensaje> Mensajes { get; set; }
         public DbSet<Subasta> Subastas { get; set; }
+        public DbSet<ApplicationUser> ApplicationUser { get; set; }
     }
 }

@@ -40,10 +40,36 @@ namespace ProyectoFinal.Controllers
                 if (roles.Contains("Cliente"))
                 {
                     // Los compradores pueden ver todos los comics en la tienda
-                    var comics = await _context.Comics.Where(c => c.Vendido == false).ToListAsync();
-                    var subastas = await _context.Subastas.Where(s => s.FechaAnuncio >= DateTime.Today & s.FechaFin<=DateTime.Now).ToListAsync();
-                    
-                    return View(new { comics, subastas });
+                    var comics = await _context.Comics
+                    .Where(c => c.Vendido == false)
+                    .Join(
+                        _context.Users,                  
+                        comic => comic.VendedorId,       
+                        user => user.Id,                 
+                        (comic, user) => new             
+                        {
+                            Comic = comic,
+                            Vendedor = user
+                        }
+                    )
+                    .ToListAsync();
+                    var subastas = await _context.Subastas.Where(s => s.FechaAnuncio >= DateTime.Today & s.FechaFin<=DateTime.Now)
+                        .Join(
+                        _context.Users,
+                        subasta => subasta.Vendedor,
+                        user => user.Id,
+                        (comic, user) => new
+                        {
+                            Comic = comic,
+                            Vendedor = user
+                        }).ToListAsync();
+
+                    var viewModel = new 
+                    {
+                        Comics = comics,
+                        Subastas = subastas
+                    };
+                    return View(viewModel);
                 }
                 else if (roles.Contains("Vendedor"))
                 {
