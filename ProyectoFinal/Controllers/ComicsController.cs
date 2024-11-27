@@ -40,7 +40,10 @@ namespace ProyectoFinal.Controllers
                 if (roles.Contains("Cliente"))
                 {
                     // Los compradores pueden ver todos los comics en la tienda
-                    return View(await _context.Comics.Where(c => c.Vendido ==false).ToListAsync());
+                    var comics = await _context.Comics.Where(c => c.Vendido == false).ToListAsync();
+                    var subastas = await _context.Subastas.Where(s => s.FechaAnuncio >= DateTime.Today & s.FechaFin<=DateTime.Now).ToListAsync();
+                    
+                    return View(new { comics, subastas });
                 }
                 else if (roles.Contains("Vendedor"))
                 {
@@ -64,6 +67,7 @@ namespace ProyectoFinal.Controllers
         }
 
         // GET: Comics/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -99,7 +103,7 @@ namespace ProyectoFinal.Controllers
                 if (roles.Contains("Vendedor"))
                 {
                     // Los vendedores solo pueden ver los comics que han subido
-                    return View(await _context.Comics.Where(c => c.VendedorId == userId).ToListAsync());
+                    return View();
                 }
                 // esto es facil de escalar para un admin pues solo hay que agregar su apartado
 

@@ -3285,19 +3285,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\andea\\.nuget\\packages\\": {}
+    "C:\\Users\\SoporteTI\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\andea\\OneDrive\\Escritorio\\2025-1\\DiU2025-1\\Clase 14\\ProyectoFinal\\ProyectoFinal.csproj",
+      "projectUniqueName": "C:\\Users\\SoporteTI\\Documents\\Interfaces De usuario\\TiendaDeComics\\ProyectoFinal\\ProyectoFinal.csproj",
       "projectName": "ProyectoFinal",
-      "projectPath": "C:\\Users\\andea\\OneDrive\\Escritorio\\2025-1\\DiU2025-1\\Clase 14\\ProyectoFinal\\ProyectoFinal.csproj",
-      "packagesPath": "C:\\Users\\andea\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\andea\\OneDrive\\Escritorio\\2025-1\\DiU2025-1\\Clase 14\\ProyectoFinal\\obj\\",
+      "projectPath": "C:\\Users\\SoporteTI\\Documents\\Interfaces De usuario\\TiendaDeComics\\ProyectoFinal\\ProyectoFinal.csproj",
+      "packagesPath": "C:\\Users\\SoporteTI\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\SoporteTI\\Documents\\Interfaces De usuario\\TiendaDeComics\\ProyectoFinal\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\andea\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\SoporteTI\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -3305,6 +3310,7 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {

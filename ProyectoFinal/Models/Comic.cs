@@ -6,6 +6,8 @@ namespace ProyectoFinal.Models
         public string Nombre { get; set; } = null!;
         public string RutaImagen { get; set; } = null!;
         public string VendedorId { get; set; } = null!; // Relación con ApplicationUser
+
+        public bool Vendido { get; set; } = false;
         public ApplicationUser UsuarioVendedor { get; set; } = null!;
     }
 }
