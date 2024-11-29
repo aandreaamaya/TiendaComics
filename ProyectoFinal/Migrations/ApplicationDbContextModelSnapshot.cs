@@ -227,10 +227,6 @@ namespace ProyectoFinal.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("UsuarioVendedorId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("VendedorId")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -240,7 +236,7 @@ namespace ProyectoFinal.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UsuarioVendedorId");
+                    b.HasIndex("VendedorId");
 
                     b.ToTable("Comics");
                 });
@@ -285,9 +281,8 @@ namespace ProyectoFinal.Migrations
                     b.Property<DateTime>("FechaEmision")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ObjetoTrueque")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("IdComic")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Remitente")
                         .HasColumnType("INTEGER");
@@ -391,7 +386,7 @@ namespace ProyectoFinal.Migrations
                 {
                     b.HasOne("ProyectoFinal.Models.ApplicationUser", "UsuarioVendedor")
                         .WithMany()
-                        .HasForeignKey("UsuarioVendedorId")
+                        .HasForeignKey("VendedorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

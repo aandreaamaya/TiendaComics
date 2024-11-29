@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProyectoFinal.Models;
 
-
 namespace ProyectoFinal.Controllers
 {
+    [Authorize]
     public class ComicsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -27,150 +25,138 @@ namespace ProyectoFinal.Controllers
         }
 
         // GET: Comics
-        [Authorize]
         public async Task<IActionResult> Index()
         {
-            if (User.Identity != null && User.Identity.IsAuthenticated)
-            {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var user = await _userManager.FindByIdAsync(userId);
-                var roles = await _userManager.GetRolesAsync(user);
-                var mensajes = await _context.Mensajes.Where(n => n.Remitente == userId).ToListAsync();
-                var notificiaciones = await _context.Mensajes.Where(n => n.Remitente == userId).ToListAsync();
-
-                if (roles.Contains("Cliente"))
-                {
-                    // Los compradores pueden ver todos los comics en la tienda
-                    var comics = await _context.Comics
-                    .Where(c => c.Vendido == false)
-                    .Join(
-                        _context.Users,                  
-                        comic => comic.VendedorId,       
-                        user => user.Id,                 
-                        (comic, user) => new             
-                        {
-                            Comic = comic,
-                            Vendedor = user
-                        }
-                    )
-                    .ToListAsync();
-                    var subastas = await _context.Subastas.Where(s => s.FechaAnuncio >= DateTime.Today & s.FechaFin<=DateTime.Now)
-                        .Join(
-                        _context.Users,
-                        subasta => subasta.Vendedor,
-                        user => user.Id,
-                        (comic, user) => new
-                        {
-                            Comic = comic,
-                            Vendedor = user
-                        }).ToListAsync();
-
-                    
-                    return View(new{Comics = comics,Subastas = subastas});
-                }
-                else if (roles.Contains("Vendedor"))
-                {
-                    // Los vendedores solo pueden ver los comics que han subido
-                    return View(await _context.Comics.Where(c => c.VendedorId == userId).ToListAsync());
-                }
-                // esto es facil de escalar para un admin pues solo hay que agregar su apartado
-
-                else
-                {
-                    return RedirectToAction("Login", "Account");
-                }
-                
-
-            }
-            else
+            if (!User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Login", "Account");
             }
-            
-        }
 
-        // GET: Comics/Details/5
-        [Authorize]
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
             {
-                return NotFound();
+                return RedirectToAction("Login", "Account");
             }
 
-            var comic = await _context.Comics
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (comic == null)
+            var roles = await _userManager.GetRolesAsync(await _userManager.FindByIdAsync(userId));
+            if (roles.Contains("Cliente"))
             {
-                return NotFound();
+                // Los compradores pueden ver todos los cómics disponibles
+                var comics = await _context.Comics
+                    .Where(c => !c.Vendido)
+                    .Include(c => c.UsuarioVendedor)
+                    .ToListAsync();
+
+                return View(comics);
+            }
+            else if (roles.Contains("Vendedor"))
+            {
+                // Los vendedores solo pueden ver sus propios cómics
+                var comics = await _context.Comics
+                    .Where(c => c.VendedorId == userId)
+                    .ToListAsync();
+
+                return View(comics);
             }
 
-            return View(comic);
-        }
-        //GET: Comics/RegisterAsSeller
-        public IActionResult RegisterAsSeller()
-        {
-            return View();
+            return Unauthorized("No tienes permisos para acceder a esta sección.");
         }
 
         // GET: Comics/Create
-        [Authorize]
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
-            if(User.Identity != null && User.Identity.IsAuthenticated)
-            {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var user = await _userManager.FindByIdAsync(userId);
-                var roles = await _userManager.GetRolesAsync(user);
-            
-                if (roles.Contains("Vendedor"))
-                {
-                    
-                    return View();
-                }
-
-                else
-                {
-                    RegisterAsSeller();
-                    return Ok();
-                }
-
-
-            }
-            else
+            if (!User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Login", "Account");
             }
 
+            return View();
         }
 
         // POST: Comics/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,RutaImagen,VendedorId")] Comic comic)
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> Create([Bind("Nombre,RutaImagen")] Comic comic)
+{
+    if (!User.Identity.IsAuthenticated)
+    {
+        return RedirectToAction("Login", "Account");
+    }
+
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    if (string.IsNullOrEmpty(userId))
+    {
+        return RedirectToAction("Login", "Account");
+    }
+
+    if (ModelState.IsValid)
+    {
+        // Asigna el ID del vendedor
+        comic.VendedorId = userId;
+
+        // Carga el usuario vendedor desde la base de datos y asigna la relación
+        var usuarioVendedor = await _userManager.FindByIdAsync(userId);
+        if (usuarioVendedor == null)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(comic);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
+            ModelState.AddModelError("", "El usuario vendedor no existe.");
             return View(comic);
         }
 
-        // GET: Comics/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (User.Identity != null && User.Identity.IsAuthenticated)
-            {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var user = await _userManager.FindByIdAsync(userId);
-                var roles = await _userManager.GetRolesAsync(user);
+        comic.UsuarioVendedor = usuarioVendedor;
+        comic.Vendido = false;
 
-                if (roles.Contains("Vendedor"))
+        try
+        {
+            _context.Comics.Add(comic);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al guardar el cómic: {ex.Message}");
+            ModelState.AddModelError("", "Ocurrió un error al guardar el cómic.");
+        }
+    }
+
+    return View(comic);
+}
+
+
+
+                // GET: Comics/Details/5
+                public async Task<IActionResult> Details(int? id)
                 {
+                    if (id == null)
+                    {
+                        return NotFound();
+                    }
+
+                    var comic = await _context.Comics
+                        .Include(c => c.UsuarioVendedor)
+                        .FirstOrDefaultAsync(m => m.Id == id);
+
+                    if (comic == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return View(comic);
+                }
+
+                // GET: Comics/Edit/5
+                public async Task<IActionResult> Edit(int? id)
+                {
+                    if (!User.Identity.IsAuthenticated)
+                    {
+                        return RedirectToAction("Login", "Account");
+                    }
+
+                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    if (string.IsNullOrEmpty(userId))
+                    {
+                        return RedirectToAction("Login", "Account");
+                    }
+
                     if (id == null)
                     {
                         return NotFound();
@@ -181,40 +167,39 @@ namespace ProyectoFinal.Controllers
                     {
                         return NotFound();
                     }
+
+                    if (comic.VendedorId != userId)
+                    {
+                        return Unauthorized("No tienes permiso para editar este cómic.");
+                    }
+
                     return View(comic);
                 }
-                // esto es facil de escalar para un admin pues solo hay que agregar su apartado
 
-                else
-                {
-                    RegisterAsSeller();
-                    return Ok();
-                }
-            }
-            else
-            {
-                return RedirectToAction("Login", "Account");
-            }
-        }
-
-        // POST: Comics/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+                // POST: Comics/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,RutaImagen,VendedorId")] Comic comic)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,RutaImagen")] Comic comic)
         {
             if (id != comic.Id)
             {
                 return NotFound();
             }
 
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
+                    comic.VendedorId = userId;
                     _context.Update(comic);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -227,52 +212,12 @@ namespace ProyectoFinal.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
+
             return View(comic);
         }
 
-        // GET: Comics/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (User.Identity != null && User.Identity.IsAuthenticated)
-            {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var user = await _userManager.FindByIdAsync(userId);
-                var roles = await _userManager.GetRolesAsync(user);
-
-                if (roles.Contains("Vendedor"))
-                {
-                    if (id == null)
-                    {
-                        return NotFound();
-                    }
-
-                    var comic = await _context.Comics
-                        .FirstOrDefaultAsync(m => m.Id == id);
-                    if (comic == null)
-                    {
-                        return NotFound();
-                    }
-
-                    return View(comic);
-                }
-                // esto es facil de escalar para un admin pues solo hay que agregar su apartado
-
-                else
-                {
-                    RegisterAsSeller();
-                    return Ok();
-                }
-            }
-            else
-            {
-                return RedirectToAction("Login", "Account");
-            }
-            
-        }
-
-        // POST: Comics/Delete/5
+        // POST: Comics/Delete/5 ditgamos que si lo hizo bien 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -281,9 +226,9 @@ namespace ProyectoFinal.Controllers
             if (comic != null)
             {
                 _context.Comics.Remove(comic);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
@@ -291,5 +236,7 @@ namespace ProyectoFinal.Controllers
         {
             return _context.Comics.Any(e => e.Id == id);
         }
+
+    
     }
 }

@@ -3285,32 +3285,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\SoporteTI\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\nava5\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\SoporteTI\\Documents\\Interfaces De usuario\\TiendaDeComics\\ProyectoFinal\\ProyectoFinal.csproj",
+      "projectUniqueName": "C:\\Users\\nava5\\OneDrive\\Escritorio\\Andrea\\TiendaComics\\ProyectoFinal\\ProyectoFinal.csproj",
       "projectName": "ProyectoFinal",
-      "projectPath": "C:\\Users\\SoporteTI\\Documents\\Interfaces De usuario\\TiendaDeComics\\ProyectoFinal\\ProyectoFinal.csproj",
-      "packagesPath": "C:\\Users\\SoporteTI\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\SoporteTI\\Documents\\Interfaces De usuario\\TiendaDeComics\\ProyectoFinal\\obj\\",
+      "projectPath": "C:\\Users\\nava5\\OneDrive\\Escritorio\\Andrea\\TiendaComics\\ProyectoFinal\\ProyectoFinal.csproj",
+      "packagesPath": "C:\\Users\\nava5\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\nava5\\OneDrive\\Escritorio\\Andrea\\TiendaComics\\ProyectoFinal\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\SoporteTI\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\nava5\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {

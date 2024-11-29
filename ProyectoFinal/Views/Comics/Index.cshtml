@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<ProyectoFinal.Models.Comic>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Comics";
 }
 
-<h1>Index</h1>
+<h1>Comics Disponibles</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -13,13 +13,13 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Nombre)
+                @Html.DisplayNameFor(model => model.First().Nombre)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.RutaImagen)
+                Imagen
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.VendedorId)
+                @Html.DisplayNameFor(model => model.First().VendedorId)
             </th>
             <th></th>
         </tr>
@@ -31,7 +31,7 @@
                 @Html.DisplayFor(modelItem => item.Nombre)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.RutaImagen)
+                <img src="@item.RutaImagen" alt="@item.Nombre" class="img-fluid" style="max-height: 100px;" />
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.VendedorId)

@@ -12,5 +12,17 @@ namespace ProyectoFinal.Models
         public DbSet<Mensaje> Mensajes { get; set; }
         public DbSet<Subasta> Subastas { get; set; }
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
+        protected override void OnModelCreating(ModelBuilder builder)
+            {
+                base.OnModelCreating(builder);
+
+                builder.Entity<Comic>()
+                    .HasOne(c => c.UsuarioVendedor)
+                    .WithMany() // Si los usuarios no tienen una lista de cómics
+                    .HasForeignKey(c => c.VendedorId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            }
+
     }
+    
 }

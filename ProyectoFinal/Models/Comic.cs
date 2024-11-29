@@ -8,6 +8,7 @@ namespace ProyectoFinal.Models
         public string VendedorId { get; set; } = string.Empty;
 
         public bool Vendido { get; set; } = false;
-        public ApplicationUser UsuarioVendedor { get; set; } = null!;
+        public ApplicationUser? UsuarioVendedor { get; set; } 
+        
     }
 }
