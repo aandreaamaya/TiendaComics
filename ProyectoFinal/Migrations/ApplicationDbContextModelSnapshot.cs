@@ -247,11 +247,15 @@ namespace ProyectoFinal.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Contenido")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Emisor")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("FechaEmision")
+                    b.Property<DateTime>("FechaEnvio")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Remitente")

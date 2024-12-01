@@ -25,42 +25,18 @@ namespace ProyectoFinal.Controllers
         }
 
         // GET: Comics
-        public async Task<IActionResult> Index()
-        {
-            if (!User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction("Login", "Account");
-            }
+        // GET: Comics
+[Authorize]
+public async Task<IActionResult> Index()
+{
+    var comics = await _context.Comics
+        .Where(c => !c.Vendido) // Solo mostrar cómics disponibles
+        .Include(c => c.UsuarioVendedor) // Incluir información del vendedor
+        .ToListAsync();
 
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(userId))
-            {
-                return RedirectToAction("Login", "Account");
-            }
+    return View(comics); // Devuelve la lista de cómics para todos
+}
 
-            var roles = await _userManager.GetRolesAsync(await _userManager.FindByIdAsync(userId));
-            if (roles.Contains("Cliente"))
-            {
-                // Los compradores pueden ver todos los cómics disponibles
-                var comics = await _context.Comics
-                    .Where(c => !c.Vendido)
-                    .Include(c => c.UsuarioVendedor)
-                    .ToListAsync();
-
-                return View(comics);
-            }
-            else if (roles.Contains("Vendedor"))
-            {
-                // Los vendedores solo pueden ver sus propios cómics
-                var comics = await _context.Comics
-                    .Where(c => c.VendedorId == userId)
-                    .ToListAsync();
-
-                return View(comics);
-            }
-
-            return Unauthorized("No tienes permisos para acceder a esta sección.");
-        }
 
         // GET: Comics/Create
         public IActionResult Create()
@@ -74,53 +50,43 @@ namespace ProyectoFinal.Controllers
         }
 
         // POST: Comics/Create
-[HttpPost]
-[ValidateAntiForgeryToken]
-public async Task<IActionResult> Create([Bind("Nombre,RutaImagen")] Comic comic)
-{
-    if (!User.Identity.IsAuthenticated)
-    {
-        return RedirectToAction("Login", "Account");
-    }
-
-    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-    if (string.IsNullOrEmpty(userId))
-    {
-        return RedirectToAction("Login", "Account");
-    }
-
-    if (ModelState.IsValid)
-    {
-        // Asigna el ID del vendedor
-        comic.VendedorId = userId;
-
-        // Carga el usuario vendedor desde la base de datos y asigna la relación
-        var usuarioVendedor = await _userManager.FindByIdAsync(userId);
-        if (usuarioVendedor == null)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Nombre,RutaImagen")] Comic comic)
         {
-            ModelState.AddModelError("", "El usuario vendedor no existe.");
-            return View(comic);
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Obtiene el ID del usuario autenticado
+            if (string.IsNullOrEmpty(userId))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            if (ModelState.IsValid)
+            {
+                // Asigna el ID del vendedor y el usuario vendedor
+                comic.VendedorId = userId;
+                comic.UsuarioVendedor = await _context.Users.FindAsync(userId);
+                comic.Vendido = false;
+
+                try
+                {
+                    _context.Comics.Add(comic); // Agrega el cómic a la base de datos
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index)); // Redirige a la lista de cómics
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error al guardar el cómic: {ex.Message}");
+                    ModelState.AddModelError("", "Ocurrió un error al guardar el cómic. Inténtalo de nuevo.");
+                }
+            }
+
+            return View(comic); // Devuelve la vista en caso de error
         }
-
-        comic.UsuarioVendedor = usuarioVendedor;
-        comic.Vendido = false;
-
-        try
-        {
-            _context.Comics.Add(comic);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error al guardar el cómic: {ex.Message}");
-            ModelState.AddModelError("", "Ocurrió un error al guardar el cómic.");
-        }
-    }
-
-    return View(comic);
-}
-
 
 
                 // GET: Comics/Details/5
@@ -237,6 +203,5 @@ public async Task<IActionResult> Create([Bind("Nombre,RutaImagen")] Comic comic)
             return _context.Comics.Any(e => e.Id == id);
         }
 
-    
     }
 }

@@ -29,3 +29,27 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+.mensajes {
+  max-height: 500px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+}
+
+.mensaje {
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 5px;
+  max-width: 70%;
+}
+
+.mensaje-enviado {
+  background-color: #d1e7dd;
+  text-align: right;
+  margin-left: auto;
+}
+
+.mensaje-recibido {
+  background-color: #f8d7da;
+  text-align: left;
+  margin-right: auto;
+}
